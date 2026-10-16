@@ -39,3 +39,6 @@ jobs:
           path: target/*.jar
           if-no-files-found: error
           retention-days: 14
+
+      - name: List generated files
+        run: ls -lah target/
