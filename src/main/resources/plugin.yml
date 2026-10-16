@@ -1,0 +1,22 @@
+name: nxoPixel
+version: '${version}'
+
+main: org.nxo.nxoPixel.nxoPixel.NxoPixel
+api-version: '1.21'
+load: POSTWORLD
+commands:
+  sethome:
+    description: Define uma home.
+    usage: /sethome <nome>
+  home:
+    description:  Vaí até um home setada.
+    usage: /home <nome>
+  homes:
+    description:  Mostra todas suas homes.
+    usage: /homes
+  deletehome:
+    description:  Deleta uma home.
+    usage: /deletehome <nome da home>
+  renamehome:
+    description:  Renomeia uma home.
+    usage: /renamehome <nome da home> <novo nome>
