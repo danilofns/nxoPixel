@@ -34,7 +34,7 @@ jobs:
 
             - name: Get bump version
               id: bump_label
-              uses: SamirMartin/get-labels-action@v0
+              uses: SamirMarin/get-labels-action@v0
               with:
                 github_token: ${{secrets.GITHUB_TOKEN}}
                 label_key: bump
