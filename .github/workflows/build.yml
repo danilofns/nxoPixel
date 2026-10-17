@@ -41,5 +41,4 @@ jobs:
           if-no-files-found: error
           retention-days: 14
 
-      - name: List generated files
-        run: ls -lah target/
+        

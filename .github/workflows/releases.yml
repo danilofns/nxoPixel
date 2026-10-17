@@ -1,0 +1,61 @@
+
+name: releases nxoPixel
+
+on:
+  workflow_run:
+    workflows: ["Build nxoPixel"]
+    types:
+        - completed
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+permissions:
+    contents: write
+
+jobs:
+    release:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v5
+    
+            - name: Download compiled JAR
+              uses: dawidd6/action-download-artifact@v6
+              with:
+                workflow: build.yml
+                run_id: ${{ github.event.workflow_run.id }}
+                name: nxoPixel-jar
+                path: release-assets
+                github_token: ${{ secrets.GITHUB_TOKEN }}
+
+            - name: Get bump version
+              id: bump_label
+              uses: SamirMartin/get-labels-action@v0
+              with:
+                github_token: ${{secrets.GITHUB_TOKEN}}
+                label_key: bump
+                label_value_order: "patch,minor,major,ignore"
+                default_label_value: patch
+
+            - name: create a tag to release
+              id: tag_version
+              uses: mathieudutour/github-tag-action@v6.1
+              with:
+                github_token: ${{secrets.GITHUB_TOKEN}}
+                default_bump: ${{steps.bump_label.outputs.label_value}}
+                dry_run: ${{github.event_name == 'pull_request'}}
+                tag_prefix: v
+
+            - name: Create Release
+              if: steps.bump_label.outputs.label_value != 'ignore'
+              uses: ncipollo/release-action@v1
+              with:
+                tag: ${{ steps.tag_version.outputs.new_tag }}
+                name: Release ${{ steps.tag_version.outputs.new_tag }}
+                body: ${{ steps.tag_version.outputs.changelog }}
+                artifacts: release-assets/nxoPixel.jar
+                artifactContentType: application/java-archive
