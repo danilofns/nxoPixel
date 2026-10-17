@@ -5,6 +5,7 @@ on:
   push:
     branches:
       - main
+      - test/fixing-build
   pull_request:
     branches:
       - main
@@ -39,3 +40,5 @@ jobs:
           path: target/*.jar
           if-no-files-found: error
           retention-days: 14
+
+        
