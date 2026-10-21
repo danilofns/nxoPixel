@@ -1,7 +1,6 @@
 package org.nxo.nxoPixel.nxoPixel.onJoin.events;
 
 import org.bukkit.Color;
-import org.bukkit.Effect;
 import org.bukkit.FireworkEffect;
 import org.bukkit.Location;
 import org.bukkit.entity.EntityType;
@@ -23,26 +22,19 @@ public class Eventos implements Listener {
 
     public void soltarFogoDeArtificio(Player player) {
         Location local = player.getLocation();
-        // 1. Invoca a entidade do Fogo de Artifício no local desejado
         Firework fw = (Firework) local.getWorld().spawnEntity(local, EntityType.FIREWORK_ROCKET);
-
-        // 2. Pega os metadados para customizar a explosão
         FireworkMeta fwm = fw.getFireworkMeta();
-
-        // 3. Cria o efeito visual (cores, tipo de explosão, etc.)
         FireworkEffect efeito = FireworkEffect.builder()
-                .flicker(true)                                   // Efeito de cintilar/piscar
-                .trail(true)                                     // Deixa rastro de fumaça
-                .with(FireworkEffect.Type.BALL_LARGE)            // Tipo/Formato da explosão (BALL, STAR, BURST, CREEPER)
-                .withColor(Color.RED, Color.GREEN, Color.BLUE)   // Cores principais do estouro
-                .withFade(Color.YELLOW, Color.ORANGE)            // Cores para as quais ele desbota ao sumir
+                .flicker(true)
+                .trail(true)
+                .with(FireworkEffect.Type.BALL_LARGE)
+                .withColor(Color.RED, Color.GREEN, Color.BLUE)
+                .withFade(Color.YELLOW, Color.ORANGE)
                 .build();
 
-        // 4. Aplica o efeito e define a altura do voo
         fwm.addEffect(efeito);
-        fwm.setPower(1); // Altura que ele vai voar (1 equivale a cerca de 1 a 2 segundos de voo)
+        fwm.setPower(1);
 
-        // 5. Salva os metadados de volta na entidade
         fw.setFireworkMeta(fwm);
     }
 

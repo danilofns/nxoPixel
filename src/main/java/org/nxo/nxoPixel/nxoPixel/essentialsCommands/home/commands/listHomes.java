@@ -4,14 +4,14 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.nxo.nxoPixel.nxoPixel.essentialsCommands.home.HomeManager;
+import org.nxo.nxoPixel.nxoPixel.essentialsCommands.home.homeController;
 
 public class listHomes implements CommandExecutor {
 
-    private final HomeManager homeManager;
+    private final homeController homecontroller;
 
-    public listHomes(HomeManager homeManager) {
-        this.homeManager = homeManager;
+    public listHomes(homeController homecontroller) {
+        this.homecontroller = homecontroller;
     }
 
     @Override
@@ -26,7 +26,7 @@ public class listHomes implements CommandExecutor {
             return true;
         }
 
-        homeManager.homes(player);
+        homecontroller.homes(player);
 
         return true;
     }
