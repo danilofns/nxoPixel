@@ -4,14 +4,14 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.nxo.nxoPixel.nxoPixel.essentialsCommands.home.HomeManager;
+import org.nxo.nxoPixel.nxoPixel.essentialsCommands.home.homeController;
 
 public class deleteHome implements CommandExecutor {
 
-    private final HomeManager homeManager;
+    private final homeController homecontroller;
 
-    public deleteHome(HomeManager homeManager) {
-        this.homeManager = homeManager;
+    public deleteHome(homeController homecontroller) {
+        this.homecontroller = homecontroller;
     }
 
     @Override
@@ -26,7 +26,7 @@ public class deleteHome implements CommandExecutor {
             return true;
         }
 
-        homeManager.deleteHome(player, args[0]);
+        homecontroller.deleteHome(player, args[0]);
 
         player.sendMessage("§5§l[Nxo§c§lPixel] §fA home: §l"+ args[0] + "§f foi deletada com sucesso. \n");
         return true;

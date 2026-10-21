@@ -12,7 +12,7 @@ Players currently have no built-in way to save multiple locations for later use.
 
 - Adds the `/sethome <name>` command to save a player's current location.
 - Adds the `/home <name>` command to teleport to a saved home.
-- Introduces a `HomeManager` to centralize home management logic.
+- Introduces a `homeManager` to centralize home management logic.
 - Persists player homes in a JSON file.
 - Adds validation for missing names and nonexistent homes.
 

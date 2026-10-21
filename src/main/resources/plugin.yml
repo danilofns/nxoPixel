@@ -20,3 +20,6 @@ commands:
   renamehome:
     description:  Renomeia uma home.
     usage: /renamehome <nome da home> <novo nome>
+  tpa:
+    description:  Teleport até um jogador.
+    usage: /tpa <nome do jogador>

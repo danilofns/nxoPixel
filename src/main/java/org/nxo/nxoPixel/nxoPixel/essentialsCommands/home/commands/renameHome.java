@@ -4,14 +4,14 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.nxo.nxoPixel.nxoPixel.essentialsCommands.home.HomeManager;
+import org.nxo.nxoPixel.nxoPixel.essentialsCommands.home.homeController;
 
 public class renameHome implements CommandExecutor {
 
-    private final HomeManager homemanager;
+    private final homeController homecontroller;
 
-    public renameHome(HomeManager homeManager) {
-        this.homemanager = homeManager;
+    public renameHome(homeController homecontroller) {
+        this.homecontroller = homecontroller;
     }
 
     @Override
@@ -29,7 +29,7 @@ public class renameHome implements CommandExecutor {
 
         String nameHome = args[0];
         String newName = args[1];
-        homemanager.renameHome(player, nameHome, newName);
+        homecontroller.renameHome(player, nameHome, newName);
 
         return true;
     }

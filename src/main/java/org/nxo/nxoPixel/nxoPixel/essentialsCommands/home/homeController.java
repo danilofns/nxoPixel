@@ -1,59 +1,23 @@
 package org.nxo.nxoPixel.nxoPixel.essentialsCommands.home;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
-import org.bukkit.plugin.java.JavaPlugin;
-
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public class HomeManager {
+public class homeController {
 
-    private final File arquivo;
-    private final Gson gson = new GsonBuilder()
-            .setPrettyPrinting()
-            .create();
+    private final homeManager homeManager;
+    private final JsonObject homes;
 
-    private JsonObject homes;
-
-    public HomeManager(JavaPlugin plugin) {
-        this.arquivo = new File(plugin.getDataFolder(), "homes.json");
-
-        if (!plugin.getDataFolder().exists()) {
-            plugin.getDataFolder().mkdirs();
-        }
-
-        carregarHomes();
-    }
-
-    private void carregarHomes() {
-        if (arquivo.exists()) {
-            try (FileReader reader = new FileReader(arquivo)) {
-                homes = gson.fromJson(reader, JsonObject.class);
-
-                if (homes == null) {
-                    homes = new JsonObject();
-                }
-            } catch (IOException e) {
-                throw new RuntimeException(
-                        "Erro ao carregar homes.json", e
-                );
-            }
-        } else {
-            homes = new JsonObject();
-            salvarArquivo();
-        }
+    public homeController(homeManager homeManager) {
+        this.homeManager = homeManager;
+        this.homes = homeManager.getHomes();
     }
 
     public String uuid(Player player) {
@@ -84,43 +48,49 @@ public class HomeManager {
         JsonObject homesPlayer = homes.getAsJsonObject(uuid);
         JsonObject dadosHome = new JsonObject();
 
-        dadosHome.addProperty("world", location.getWorld().getName());
+        dadosHome.addProperty("world", Objects.requireNonNull(location.getWorld()).getName());
         dadosHome.addProperty("x", location.getX());
         dadosHome.addProperty("y", location.getY());
         dadosHome.addProperty("z", location.getZ());
+        dadosHome.addProperty("pitch", location.getPitch());
+        dadosHome.addProperty("yaw", location.getYaw());
 
-        // Cria ou atualiza a home com esse nome.
         homesPlayer.add(nomeHome, dadosHome);
         player.sendMessage("§5§l[Nxo§c§lPixel] §f Localização salva com sucesso!. \n");
 
-        salvarArquivo();
+        homeManager.salvarArquivo();
     }
 
     public void home(Player player, String nomeHome) {
         String uuid = uuid(player);
-        Boolean getCond = hasHome(player);
-
-        if(getCond == false) {
+        int i;
+        if(!hasHome(player)) {
             JsonObject homesPlayer = homes.getAsJsonObject(uuid);
-            JsonObject homesObject = homesPlayer.getAsJsonObject(nomeHome);
-            World world = Bukkit.getWorld(homesObject.get("world").getAsString());
-            String x = homesObject.get("x").getAsString();
-            String y = homesObject.get("y").getAsString();
-            String z = homesObject.get("z").getAsString();
-            double xDouble = Double.parseDouble(x);
-            double yDouble = Double.parseDouble(y);
-            double zDouble = Double.parseDouble(z);
-            Location toHome = new Location(world,xDouble,yDouble,zDouble);
-            player.teleport(toHome);
+            List<String> keys = new ArrayList<>(homesPlayer.keySet());
+            for(i = 0; i < homesPlayer.size(); i++) {
+                String keyName = keys.get(i);
+                if(Objects.equals(keyName, nomeHome)) {
+                    JsonObject homesObject = homesPlayer.getAsJsonObject(nomeHome);
+                    World world = Bukkit.getWorld(homesObject.get("world").getAsString());
+                    double x = homesObject.get("x").getAsDouble();
+                    double y = homesObject.get("y").getAsDouble();
+                    double z = homesObject.get("z").getAsDouble();
+                    float pitch = homesObject.get("pitch").getAsFloat();
+                    float yaw = homesObject.get("yaw").getAsFloat();
+                    Location toHome = new Location(world,x,y,z,yaw,pitch);
+                    player.teleport(toHome);
+                    return;
+                }
+            }
         }
+        player.sendMessage("§5§l[Nxo§c§lPixel] §fVocê não possui essa home");
     }
 
     public void homes(Player player) {
         String uuid = uuid(player);
         int i;
-        Boolean getCond = hasHome(player);
 
-        if(getCond == false) {
+        if(!hasHome(player)) {
             JsonObject homesPlayer = homes.getAsJsonObject(uuid);
             List<String> keys = new ArrayList<>((homesPlayer.keySet()));
             List<String> allHomes = new ArrayList<>();
@@ -138,9 +108,8 @@ public class HomeManager {
     public void deleteHome(Player player, String home) {
         String uuid = uuid(player);
         int i;
-        Boolean getCond = hasHome(player);
 
-        if(getCond == false) {
+        if(!hasHome(player)) {
             JsonObject homesPlayer = homes.getAsJsonObject(uuid);
             List<String> keys = new ArrayList<>((homesPlayer.keySet()));
             for(i = 0; i < homesPlayer.size(); i++) {
@@ -149,16 +118,15 @@ public class HomeManager {
                     homesPlayer.remove(home);
                 }
             }
-            salvarArquivo();
+            homeManager.salvarArquivo();
         }
     }
 
     public void renameHome(Player player, String oldName, String newName) {
-        String uuid = uuid(player);
         int i;
-        Boolean getCond = hasHome(player);
+        String uuid = uuid(player);
 
-        if(getCond == false) {
+        if(!hasHome(player)) {
             JsonObject homesPlayer = homes.getAsJsonObject(uuid);
             List<String> keys = new ArrayList<>((homesPlayer.keySet()));
             for(i = 0; i < homesPlayer.size(); i++) {
@@ -168,20 +136,10 @@ public class HomeManager {
                     if(newHome != null) {
                         homesPlayer.add(newName, newHome);
                         player.sendMessage("§5§l[Nxo§c§lPixel] §fNome da home alterado com sucesso!.");
-                        salvarArquivo();
+                        homeManager.salvarArquivo();
                     }
                 }
             }
-        }
-    }
-
-    private void salvarArquivo() {
-        try (FileWriter writer = new FileWriter(arquivo)) {
-            gson.toJson(homes, writer);
-        } catch (IOException e) {
-            throw new RuntimeException(
-                    "Erro ao salvar homes.json", e
-            );
         }
     }
 }
