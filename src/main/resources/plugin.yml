@@ -23,3 +23,15 @@ commands:
   tpa:
     description:  Teleport até um jogador.
     usage: /tpa <nome do jogador>
+  tpaccept:
+    description: Aceita o teleport do jogador.
+    usage: /tpaccept <nome do jogador>
+  tpalist:
+    description: Verifica a lista de teleport enviado.
+    usage: /tpalist
+  tag:
+    description: Escolha, crie ou remova uma tag.
+    usage: /tag <nome da tag>|| /tag criar <nome da tag> <prefixo da tag> || /tag remover <nome da tag>
+  tags:
+    description: Liste as tags.
+    usage: /tags
