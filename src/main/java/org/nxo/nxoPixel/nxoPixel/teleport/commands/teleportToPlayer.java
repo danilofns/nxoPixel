@@ -22,7 +22,7 @@ public class teleportToPlayer implements CommandExecutor {
         }
 
         if(args.length == 0) {
-            player.sendMessage("utilize: /tpa <player>");
+            player.sendMessage("§5§l[Nxo§c§lPixel] §futilize: /tpa <player>");
             return true;
         }
 
