@@ -6,9 +6,8 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+
+import java.util.*;
 
 public class homeController {
 
@@ -23,6 +22,7 @@ public class homeController {
     public String uuid(Player player) {
         return player.getUniqueId().toString();
     }
+
 
     public Boolean hasHome(Player player) {
         String uuid = uuid(player);
@@ -80,6 +80,7 @@ public class homeController {
                     Location toHome = new Location(world,x,y,z,yaw,pitch);
                     player.teleport(toHome);
                     return;
+
                 }
             }
         }
